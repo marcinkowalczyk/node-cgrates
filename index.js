@@ -1,5 +1,10 @@
 var needle = require('needle');
+const uuidv4 = require('uuid/v4');
 
+const balanceType  = {
+	"SMS": "*sms",
+	"VOICE": "*voice"
+};
 
 var CGRates = function(url) {
 	var self = this;
@@ -78,6 +83,60 @@ var CGRates = function(url) {
 
 		var data = {
 			method: "ApierV2.GetAccount",
+			params: [options]
+		};
+
+		if (request_id) {
+			data.id = request_id;
+		}
+
+		return self.getRequest(data);
+	};
+
+	// {
+	// 	"id": 1,
+	// 	"method": "ApierV1.GetMaxUsage",
+	// 	"params": [{
+	//     "ToR": "*sms",
+	//     "RequestType":"sms",
+	//     "Tenant": "cgrates.org",
+	//     "Account": "test",
+	//     "Category": "sms",
+	//     "Subject": "",
+	//     "Destination": "",
+	//     "SetupTime": "1572116152",
+	//     "Usage": "5"
+	// 	}]
+	// }
+	this.getMaxUsage = function(options, request_id) {
+		if (!options.Tenant) {
+			throw new Error("Tenant is required");
+		}
+
+		if (!options.Account) {
+			throw new Error("Account is required");
+		}
+		if (!options.ToR) {
+			options.Tor = balanceType.SMS;
+		}
+		if (!options.Category) {
+			options.Category = "call";
+		}
+
+		if (!options.SetupTime) {
+			options.SetupTime = Date.now().toString();
+		}
+
+		if (!options.Destination) {
+			throw new Error("Destination is required");
+		}
+
+		if (!options.Usage) {
+			throw new Error("Usage is required");
+		}
+
+		var data = {
+			method: "ApierV1.GetMaxUsage",
 			params: [options]
 		};
 
@@ -338,8 +397,12 @@ var CGRates = function(url) {
 			throw new Error("Account is required");
 		}
 
+		if (!options.OriginID) {
+			options.OriginID = uuidv4();
+		}
+
 		var data = {
-			method: "CdrsV2.ProcessExternalCdr",
+			method: "CDRsV2.ProcessExternalCDR",
 			params: [options]
 		};
 
