@@ -17,7 +17,7 @@ var CGRates = function(url) {
 
 	this.getRequest = function(data) {
 		var promise = new Promise(function(resolve, reject) {
-			self.needle.post(self.url, data, {json:true}, function(err, response) {
+			self.needle.post(self.url, data, {json:true, timeout:60000}, function(err, response) {
 				if (err) {
 					return reject(err);
 				}
@@ -388,6 +388,7 @@ var CGRates = function(url) {
 	// 		"Account": "5c1b474f-3a10-48d8-89a4-395a94a95a3c"
 	// 	}]
 	// }
+
 	this.createCdr = function(options, request_id) {
 		if (!options.Tenant) {
 			throw new Error("Tenant is required");
@@ -431,6 +432,147 @@ var CGRates = function(url) {
 	// 	}]
 	// }
 	this.deleteCdrs = function(options, request_id) {};
+
+	this.setTPDestination = function (options, request_id) {
+		if (!options.TPid) {
+			throw new Error("TPid is required");
+		}
+
+		if (!options.ID) {
+			throw new Error("ID is required");
+		}
+
+		if (!options.Prefixes) {
+			throw new Error("Prefixes is required");
+		}
+
+		var data = {
+			method: "ApierV2.SetTPDestination",
+			params: [options]
+		};
+
+		if (request_id) {
+			data.id = request_id;
+		}
+
+		return self.getRequest(data);
+	};
+
+	this.setTPRate = function (options, request_id) {
+		if (!options.TPid) {
+			throw new Error("TPid is required");
+		}
+
+		if (!options.ID) {
+			throw new Error("ID is required");
+		}
+
+		if (!options.RateSlots) {
+			throw new Error("RateSlots is required");
+		}
+
+		var data = {
+			method: "ApierV1.SetTPRate",
+			params: [options]
+		};
+
+		if (request_id) {
+			data.id = request_id;
+		}
+
+		return self.getRequest(data);
+	};
+
+
+	this.loadFromStorDB = function (options, request_id) {
+		if (!options.TPid) {
+			throw new Error("TPid is required");
+		}
+		var data = {
+			method: "ApierV1.LoadTariffPlanFromStorDb",
+			params: [options]
+		};
+
+		if (request_id) {
+			data.id = request_id;
+		}
+
+		return self.getRequest(data);
+	};
+
+	this.setTPDestinationRate = function (options, request_id) {
+		if (!options.TPid) {
+			throw new Error("TPid is required");
+		}
+
+		if (!options.ID) {
+			throw new Error("ID is required");
+		}
+
+		if (!options.DestinationRates) {
+			throw new Error("ID is required");
+		}
+
+		var data = {
+			method: "ApierV1.SetTPDestinationRate",
+			params: [options]
+		};
+
+		if (request_id) {
+			data.id = request_id;
+		}
+
+		return self.getRequest(data);
+	};
+
+
+	this.setTPRatingPlan = function (options, request_id) {
+		if (!options.TPid) {
+			throw new Error("TPid is required");
+		}
+
+		if (!options.ID) {
+			throw new Error("RatingPlanId is required");
+		}
+
+
+		if (!options.RatingPlanBindings) {
+			throw new Error("RatingPlanId is required");
+		}
+
+		var data = {
+			method: "ApierV1.SetTPRatingPlan",
+			params: [options]
+		};
+
+		if (request_id) {
+			data.id = request_id;
+		}
+
+		return self.getRequest(data);
+	};
+
+
+	this.loadRatingPlan = function (options, request_id) {
+		if (!options.TPid) {
+			throw new Error("TPid is required");
+		}
+
+		if (!options.RatingPlanId) {
+			throw new Error("RatingPlanId is required");
+		}
+
+		var data = {
+			method: "ApierV1.LoadRatingPlan",
+			params: [options]
+		};
+
+		if (request_id) {
+			data.id = request_id;
+		}
+
+		return self.getRequest(data);
+	};
 
 	return this;
 };
