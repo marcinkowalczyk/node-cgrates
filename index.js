@@ -552,6 +552,32 @@ var CGRates = function(url) {
 		return self.getRequest(data);
 	};
 
+	this.GetSuppliers = function (options, request_id) {
+		if (!options.Tenant) {
+			throw new Error("Tenant is required");
+		}
+
+		if (!options.ID) {
+			throw new Error("ID is required");
+		}
+
+
+		if (!options.Event) {
+			throw new Error("Event is required");
+		}
+
+		var data = {
+			method: "SupplierSv1.GetSuppliers",
+			params: [options]
+		};
+
+		if (request_id) {
+			data.id = request_id;
+		}
+
+		return self.getRequest(data);
+	};
+
 
 	this.loadRatingPlan = function (options, request_id) {
 		if (!options.TPid) {
