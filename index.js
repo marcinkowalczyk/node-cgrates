@@ -552,6 +552,37 @@ var CGRates = function(url) {
 		return self.getRequest(data);
 	};
 
+	this.setTPRatingProfile = function (options, request_id) {
+		if (!options.Tenant) {
+			throw new Error("Tenant is required");
+		}
+
+		if (!options.Category) {
+			throw new Error("Category is required");
+		}
+
+
+		if (!options.Direction) {
+			throw new Error("Direction is required");
+		}
+
+		if (!options.Subject) {
+			throw new Error("Subject is required");
+		}
+
+		var data = {
+			method: "ApierV1.SetTPRatingProfile",
+			params: [options]
+		};
+
+		if (request_id) {
+			data.id = request_id;
+		}
+
+		return self.getRequest(data);
+	};
+
+
 	this.GetSuppliers = function (options, request_id) {
 		if (!options.Tenant) {
 			throw new Error("Tenant is required");
