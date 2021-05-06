@@ -6,7 +6,7 @@ const balanceType  = {
 	"VOICE": "*voice"
 };
 
-var CGRates = function(url, timeout) {
+var CGRates = function(url) {
 	var self = this;
 	if (!url) {
 		throw new Error("URL is required");
@@ -721,7 +721,6 @@ var CGRates = function(url, timeout) {
 
 		return self.getRequest(data);
 	};
-
 
 
 	return this;
