@@ -6,18 +6,19 @@ const balanceType  = {
 	"VOICE": "*voice"
 };
 
-var CGRates = function(url) {
+var CGRates = function(url, timeout) {
 	var self = this;
 	if (!url) {
 		throw new Error("URL is required");
 	}
 
 	this.url = url;
+	this.timeout = timeout || 60000;
 	this.needle = needle;
 
 	this.getRequest = function(data) {
 		var promise = new Promise(function(resolve, reject) {
-			self.needle.post(self.url, data, {json:true, timeout:60000}, function(err, response) {
+			self.needle.post(self.url, data, {json:true, timeout:self.timeout}, function(err, response) {
 				if (err) {
 					return reject(err);
 				}
@@ -610,6 +611,81 @@ var CGRates = function(url) {
 	};
 
 
+	this.GetSupplierProfilesID = function (options, request_id) {
+		if (!options.Tenant) {
+			throw new Error("Tenant is required");
+		}
+
+		var data = {
+			method: "ApierV1.GetSupplierProfileIDs",
+			params: [options]
+		};
+
+		if (request_id) {
+			data.id = request_id;
+		}
+
+		return self.getRequest(data);
+	};
+
+
+	this.GetSupplierProfile = function (options, request_id) {
+		if (!options.Tenant) {
+			throw new Error("Tenant is required");
+		}
+
+		if (!options.ID) {
+			throw new Error("ID is required");
+		}
+
+		var data = {
+			method: "ApierV1.GetSupplierProfile",
+			params: [options]
+		};
+
+		if (request_id) {
+			data.id = request_id;
+		}
+
+		return self.getRequest(data);
+	};
+
+
+	this.SetSupplierProfile = function (options, request_id) {
+		if (!options.Tenant) {
+			throw new Error("Tenant is required");
+		}
+
+		if (!options.ID) {
+			throw new Error("ID is required");
+		}
+
+		if (!options.ActivationInterval) {
+			throw new Error("ActivationInterval is required");
+		}
+
+		if (!options.Sorting) {
+			throw new Error("Sorting is required");
+		}
+
+		if (!options.Suppliers) {
+			throw new Error("Suppliers are required");
+		}
+
+
+		var data = {
+			method: "ApierV1.SetSupplierProfile",
+			params: [options]
+		};
+
+		if (request_id) {
+			data.id = request_id;
+		}
+
+		return self.getRequest(data);
+	};
+
+
 	this.loadRatingPlan = function (options, request_id) {
 		if (!options.TPid) {
 			throw new Error("TPid is required");
@@ -630,6 +706,23 @@ var CGRates = function(url) {
 
 		return self.getRequest(data);
 	};
+
+
+
+
+	this.cacheClear = function () {
+
+		var data = {
+			method: "CacheSv1.ReloadCache",
+			params: [{
+				"FlushAll": true
+			}]
+		};
+
+		return self.getRequest(data);
+	};
+
+
 
 	return this;
 };
