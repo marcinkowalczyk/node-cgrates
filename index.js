@@ -12,12 +12,17 @@ var CGRates = function(url, timeout) {
 		throw new Error("URL is required");
 	}
 
+	if (!timeout) {
+		timeout = 60000;
+	}
+
 	this.url = url;
-	this.timeout = timeout || 60000;
+	this.timeout = timeout;
 	this.needle = needle;
 
 	this.getRequest = function(data) {
 		var promise = new Promise(function(resolve, reject) {
+			console.log (`neddle data: json:true, timeout:${self.timeout}` )
 			self.needle.post(self.url, data, {json:true, timeout:self.timeout}, function(err, response) {
 				if (err) {
 					return reject(err);
@@ -172,6 +177,31 @@ var CGRates = function(url, timeout) {
 
 		var data = {
 			method: "ApierV2.SetAccount",
+			params: [options]
+		};
+
+		if (request_id) {
+			data.id = request_id;
+		}
+
+		return self.getRequest(data);
+	};
+
+	this.executAction = function(options, request_id) {
+		if (!options.Tenant) {
+			throw new Error("Tenant is required");
+		}
+
+		if (!options.Account) {
+			throw new Error("Account is required");
+		}
+
+		if (!options.ActionsId) {
+			throw new Error("ActionsId is required");
+		}
+
+		var data = {
+			method: "ApierV1.ExecuteAction",
 			params: [options]
 		};
 
